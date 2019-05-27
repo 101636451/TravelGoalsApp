@@ -21,10 +21,13 @@ class ViewControllerTripDetails: UIViewController, UITableViewDataSource {
     var arrayIndex: Int?
     var trip: Trip?
     var plans = [Plan]()
+    var tripsArray : [Trip]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        tripsArray = readJson()
+        trip = tripsArray?[arrayIndex!]
+        
         titleAndCountry.text = (trip?.name)! + " to " + (trip?.country)!
         dates.text = (trip?.startDate)! + " - " + (trip?.endDate)!
         descriptions.text = trip?.description
@@ -33,8 +36,8 @@ class ViewControllerTripDetails: UIViewController, UITableViewDataSource {
         if(trip?.isCompleted == 1) {
             markAsCompletedBtn.isEnabled = false
             addPlanbtn.isEnabled = false
-            editTripBtn.isEnabled = false
-            deleteTripBtn.isEnabled = false
+
+            //deleteTripBtn.isEnabled = false
         }
         
         plansTable.dataSource = self
@@ -45,18 +48,40 @@ class ViewControllerTripDetails: UIViewController, UITableViewDataSource {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func addPlan(_ sender: Any) {
+
+    @IBAction func addPlansToTrip(_ sender: Any) {
+        performSegue(withIdentifier: "addPlanScreen", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if(segue.identifier == "addPlanScreen") {
+            let addPlanViewController = segue.destination as! ViewControllerAddPlan
+            addPlanViewController.startDate = trip?.startDate
+            addPlanViewController.endDate = trip?.endDate
+            addPlanViewController.tripIndexValue = arrayIndex
+        }
     }
     
     @IBAction func editTrip(_ sender: Any) {
     }
     
     @IBAction func deleteTrip(_ sender: Any) {
+        let result: Bool = deleteStudent(tripArray: tripsArray!, deleteIndex: arrayIndex!)
+    
+        if result == true {
+            let alertController = UIAlertController(title: "Successful", message:
+                "Trip deleted successfully", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            performSegue(withIdentifier: "FromTripDetailsBackToTrips", sender: self)
+            self.present(alertController, animated: true, completion: nil)
+            //segueBackFromDelete
+            
+        }
+        
     }
     
     @IBOutlet weak var markAsCompletedBtn: UIButton!
     
-    @IBOutlet weak var editTripBtn: UIButton!
     @IBOutlet weak var addPlanbtn: UIButton!
     @IBOutlet weak var deleteTripBtn: UIButton!
     
@@ -80,6 +105,12 @@ class ViewControllerTripDetails: UIViewController, UITableViewDataSource {
             self.present(alertController, animated: true, completion: nil)
         }
     }
+    
+    @IBAction func reloadTable(_ sender: Any) {
+    
+    }
+    
+    
     
    
 

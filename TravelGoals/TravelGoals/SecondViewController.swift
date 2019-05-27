@@ -20,7 +20,8 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         tripArray = readJson()
-
+        //tripArray = tripArray.filter {$0.isCompleted==0}
+        tripsTable.reloadData()
         tripsTable.dataSource = self
     }
 
@@ -31,6 +32,8 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tripArray = readJson()
+        //tripArray = tripArray.filter {$0.isCompleted==0}
         tripsTable.reloadData()
     }
 
@@ -62,9 +65,11 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         if(segue.identifier == "tripsToTripDetails") {
             let detailViewController = segue.destination as! ViewControllerTripDetails
             detailViewController.arrayIndex = selectedIndex
-            detailViewController.trip = tripArray[selectedIndex!]
+            //detailViewController.trip = tripArray[selectedIndex!]
         }
     }
+    
+
     
 }
 

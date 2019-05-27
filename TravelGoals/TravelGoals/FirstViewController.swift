@@ -41,15 +41,15 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func refresh(_ sender: Any) {
-        tripArray = readJson()
-        loadTrip(array: tripArray)
+        var tripsArray = readJson()
+        loadTrip(array: tripsArray)
     }
     
     
     func loadTrip(array: [Trip]) {
         self.map.camera.altitude = 1000000000.0
         
-        for trip in tripArray {
+        for trip in array {
             
             getCoordinate(address: trip.country) { (coordinate, location, error) in
                 if let coordinate = coordinate {

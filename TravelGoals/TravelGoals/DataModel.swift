@@ -96,6 +96,43 @@ func addTrip(pname:String, pcountry:String, pstartDate:String, pendDate:String, 
     return result
 }
 
+func deleteStudent(tripArray:[Trip], deleteIndex:Int)->Bool {
+    var result: Bool = false
+    var tempTrips = tripArray
+    tempTrips.remove(at: deleteIndex)
+    let data = readFile()
+    //var dataArray = [S]()
+    let filemgr = FileManager.default
+    
+    do {
+        
+        var tripList =  try JSONDecoder().decode(TripList.self, from: data)
+        tripList.trips = tempTrips
+        
+
+        let destPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+                                                           .userDomainMask,
+                                                           true).first
+        let fullDestPath = URL(fileURLWithPath: destPath!)
+            .appendingPathComponent("trips.json")
+        
+        let fullDestPathString = fullDestPath.path
+        
+        if(filemgr.fileExists(atPath:fullDestPathString)) {
+            
+            let encodedData = try? JSONEncoder().encode(tripList)
+            try encodedData!.write(to: fullDestPath)
+            result = true
+        }
+        
+    } catch {
+        print("Error Writing to the json")
+        
+    }
+    
+    return result
+}
+
 
 func markTripAsCompleted(tripIndex:Int)-> Bool {
     var result : Bool = false
